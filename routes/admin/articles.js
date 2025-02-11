@@ -42,6 +42,40 @@ router.get("/:id", async (req, res, next) => {
   });
 });
 
+router.post("/", async (req, res) => {
+  const body = filterBody(req);
+  const article = await Article.create(body);
+  success(
+    res,
+    "创建文章成功",
+    {
+      article,
+    },
+    201
+  );
+});
+
+router.put("/:id", async (req, res) => {
+  const body = filterBody(req);
+  await Article.update(body, {
+    where: {
+      id: req.params.id,
+    },
+  });
+  success(res, "更新文章成功");
+});
+
+router.delete("/:id", async (req, res) => {
+  const result = await Article.destroy({
+    where: {
+      id: req.params.id,
+    },
+  });
+  if (result === 0) {
+    throw new NotFoundError(`ID: ${req.params.id} 的文章未找到。`);
+  }
+  success(res, "删除文章成功");
+});
 /**
  * 公共方法：查询当前文章
  */

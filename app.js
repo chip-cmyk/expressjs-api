@@ -24,12 +24,14 @@ app.use("/users", usersRouter);
 
 app.use("/admin/articles", adminArtitlesRouter);
 // 模拟一个会抛出异常的路由
-app.get("/error", (req, res) => {
-  throw new Error("Something went wrong!");
-});
+// app.get("/error", (req, res) => {
+//   throw new Error("Something went wrong!");
+// });
+
 // 定义全局错误处理中间件
 const globalErrorHandler = (err, req, res, next) => {
-  console.error(err, "处理中...");
+  // 错误代码位置
+  // console.error(err.stack);
   failure(res, err);
 };
 

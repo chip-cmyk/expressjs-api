@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Article extends Model {
     /**
@@ -13,12 +11,25 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  Article.init({
-    title: DataTypes.STRING,
-    content: DataTypes.TEXT
-  }, {
-    sequelize,
-    modelName: 'Article',
-  });
+  Article.init(
+    {
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          len: {
+            args: [2, 45],
+            msg: "标题长度需要在 2 ~ 45 个字符之间。",
+          },
+        },
+      },
+
+      content: DataTypes.TEXT,
+    },
+    {
+      sequelize,
+      modelName: "Article",
+    }
+  );
   return Article;
 };
