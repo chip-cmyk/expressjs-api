@@ -1,0 +1,37 @@
+# 日志文件
+logs
+*.log
+
+# 依赖项安装目录
+node_modules
+
+# 环境变量文件
+.env
+
+# 编译生成的文件
+dist
+build
+
+# IDE和编辑器相关文件
+.vscode
+.idea
+
+# 操作系统生成的文件
+.DS_Store
+Thumbs.db
+
+# 临时文件和缓存文件
+*.tmp
+*.temp
+*.cache
+
+# 测试报告和覆盖率文件
+coverage
+
+# 打包生成的文件
+*.zip
+*.tar.gz
+
+# 备份文件
+*.bak
+*.swp
