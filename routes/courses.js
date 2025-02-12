@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Course, Category, Chapter, User } = require("../models");
 const { Op } = require("sequelize");
-const { success } = require("../utils/response");
+const { success } = require("../utils/responses");
 const { NotFound, BadRequest } = require("http-errors");
 
 /**

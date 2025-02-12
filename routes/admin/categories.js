@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Category, Course } = require("../../models");
 const { Op } = require("sequelize");
-const { success } = require("../../utils/response");
+const { success } = require("../../utils/responses");
 const { NotFound, Conflict } = require("http-errors");
 
 router.get("/", async (req, res, next) => {

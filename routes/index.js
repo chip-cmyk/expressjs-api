@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Course, Category, User } = require("../models");
-const { success } = require("../utils/response");
+const { success } = require("../utils/responses");
 
 /**
  * 查询首页数据

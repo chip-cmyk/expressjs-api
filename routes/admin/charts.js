@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { sequelize, User } = require("../../models");
 const { Op } = require("sequelize");
-const { success } = require("../../utils/response");
+const { success } = require("../../utils/responses");
 
 /**
  * 统计用户性别

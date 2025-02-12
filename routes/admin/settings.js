@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Setting } = require("../../models");
-const { success } = require("../../utils/response");
+const { success } = require("../../utils/responses");
 const { NotFound } = require("http-errors");
 
 /**

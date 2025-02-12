@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Category } = require("../models");
-const { success } = require("../utils/response");
+const { success } = require("../utils/responses");
 
 /**
  * 查询分类列表
