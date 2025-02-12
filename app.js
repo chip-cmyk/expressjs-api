@@ -29,6 +29,7 @@ const articlesRouter = require("./routes/articles");
 const settingsRouter = require("./routes/settings");
 const searchRouter = require("./routes/search");
 const authRouter = require("./routes/auth");
+const likesRouter = require("./routes/likes");
 
 const app = express();
 
@@ -59,6 +60,7 @@ app.use("/articles", articlesRouter);
 app.use("/settings", settingsRouter);
 app.use("/search", searchRouter);
 app.use("/auth", authRouter);
+app.use("/likes", userAuth, likesRouter);
 
 // 模拟一个会抛出异常的路由
 // app.get("/error", (req, res) => {
