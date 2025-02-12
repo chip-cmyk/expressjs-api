@@ -20,6 +20,8 @@ const adminCoursesRouter = require("./routes/admin/courses");
 const adminChaptersRouter = require("./routes/admin/chapters");
 const adminChartsRouter = require("./routes/admin/charts");
 const adminAuthRouter = require("./routes/admin/auth");
+const categoriesRouter = require("./routes/categories");
+const coursesRouter = require("./routes/courses");
 
 const app = express();
 
@@ -43,7 +45,8 @@ app.use("/admin/courses", adminCoursesRouter);
 app.use("/admin/chapters", adminChaptersRouter);
 app.use("/admin/charts", adminChartsRouter);
 app.use("/admin/auth", adminAuthRouter);
-
+app.use("/categories", categoriesRouter);
+app.use("/courses", coursesRouter);
 // 模拟一个会抛出异常的路由
 // app.get("/error", (req, res) => {
 //   throw new Error("Something went wrong!");
