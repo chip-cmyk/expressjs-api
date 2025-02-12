@@ -14,7 +14,7 @@ export default [
       //未使用的函数参数不警告
       "no-unused-vars": ["warn", { args: "none" }],
       // 不允许使用未定义的变量
-      "no-undef": "warn",
+      "no-undef": "error",
     },
   },
 ];

@@ -1,12 +1,4 @@
-/**
- * 自定义 404 错误类
- */
-class NotFoundError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = "NotFoundError";
-  }
-}
+const createError = require("http-errors");
 
 /**
  * 请求成功
@@ -29,32 +21,39 @@ function success(res, message, data = {}, code = 200) {
  * @param error
  */
 function failure(res, error) {
+  // 默认响应为 500，服务器错误
+  let statusCode = 500;
+  let errors = "服务器错误";
+
   if (error.name === "SequelizeValidationError") {
-    const errors = error.errors.map((e) => e.message);
-    return res.status(400).json({
-      status: false,
-      message: "请求参数错误",
-      errors,
-    });
+    // Sequelize 验证错误
+    statusCode = 400;
+    errors = error.errors.map((e) => e.message);
+  } else if (error.name === "SequelizeUniqueConstraintError") {
+    // Sequelize 唯一约束错误
+    statusCode = 400;
+    errors = error.errors.map((e) => e.message);
+  } else if (
+    error.name === "JsonWebTokenError" ||
+    error.name === "TokenExpiredError"
+  ) {
+    // Token 验证错误
+    statusCode = 401;
+    errors = "您提交的 token 错误或已过期。";
+  } else if (error instanceof createError.HttpError) {
+    // http-errors 库创建的错误
+    statusCode = error.status;
+    errors = error.message;
   }
 
-  if (error.name === "NotFoundError") {
-    return res.status(404).json({
-      status: false,
-      message: "资源不存在",
-      errors: [error.message],
-    });
-  }
-
-  res.status(500).json({
+  res.status(statusCode).json({
     status: false,
-    message: "服务器错误",
-    errors: [error.message],
+    message: `请求失败: ${error.name}`,
+    errors: Array.isArray(errors) ? errors : [errors],
   });
 }
 
 module.exports = {
-  NotFoundError,
   success,
   failure,
 };

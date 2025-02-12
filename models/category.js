@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: { msg: "名称已存在，请选择其他名称。" },
         validate: {
-          len: { args: [2, 45], msg: "长度必须是2 ~ 45之间。" },
+          len: { args: [2, 45], msg: "名称长度必须是2 ~ 45之间。" },
         },
       },
 
@@ -26,8 +26,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
-          isInt: { msg: "必须是正整数。" },
-          min: { args: [1], msg: "必须是正整数。" },
+          isInt: { msg: "rank 必须是正整数。" },
+          min: { args: [1], msg: "rank 必须是正整数。" },
         },
       },
     },

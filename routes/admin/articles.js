@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { Article } = require("../../models");
 const { Op } = require("sequelize");
-const { NotFoundError, success } = require("../../utils/response");
+const { success } = require("../../utils/response");
+const { NotFound } = require("http-errors");
 
 router.get("/", async (req, res, next) => {
   const query = req.query;
@@ -63,7 +64,7 @@ router.put("/:id", async (req, res) => {
     },
   });
   if (result[0] === 0) {
-    throw new NotFoundError(`ID: ${req.params.id} 的文章未找到。`);
+    throw new NotFound(`ID: ${req.params.id} 的文章未找到。`);
   }
   success(res, "更新文章成功");
 });
@@ -75,7 +76,7 @@ router.delete("/:id", async (req, res) => {
     },
   });
   if (result === 0) {
-    throw new NotFoundError(`ID: ${req.params.id} 的文章未找到。`);
+    throw new NotFound(`ID: ${req.params.id} 的文章未找到。`);
   }
   success(res, "删除文章成功");
 });
@@ -87,7 +88,7 @@ async function getArticle(req) {
 
   const article = await Article.findByPk(id);
   if (!article) {
-    throw new NotFoundError(`ID: ${id}的文章未找到。`);
+    throw new NotFound(`ID: ${id}的文章未找到。`);
   }
 
   return article;
