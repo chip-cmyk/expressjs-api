@@ -3,7 +3,7 @@ const router = express.Router();
 const { Article } = require("../../models");
 const { Op } = require("sequelize");
 const { success } = require("../../utils/response");
-const { NotFound } = require("http-errors");
+const { NotFound, BadRequest } = require("http-errors");
 
 router.get("/", async (req, res, next) => {
   const query = req.query;
@@ -84,6 +84,10 @@ router.delete("/:id", async (req, res) => {
  */
 async function getArticle(req) {
   const { id } = req.params;
+
+  if (!id) {
+    throw new BadRequest("ID 不能为空。");
+  }
 
   const article = await Article.findByPk(id);
   if (!article) {
