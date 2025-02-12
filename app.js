@@ -10,6 +10,7 @@ const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 
 const adminArtitlesRouter = require("./routes/admin/articles");
+const adminCategoriesRouter = require("./routes/admin/categories");
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
 app.use("/admin/articles", adminArtitlesRouter);
+app.use("/admin/categories", adminCategoriesRouter);
 // 模拟一个会抛出异常的路由
 // app.get("/error", (req, res) => {
 //   throw new Error("Something went wrong!");

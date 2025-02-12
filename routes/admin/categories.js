@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Article } = require("../../models");
+const { Category } = require("../../models");
 const { Op } = require("sequelize");
 const { NotFoundError, success } = require("../../utils/response");
 
@@ -16,17 +16,17 @@ router.get("/", async (req, res, next) => {
     offset,
   };
 
-  if (query.title) {
+  if (query.name) {
     condition.where = {
-      title: {
-        [Op.like]: `%${query.title}%`,
+      name: {
+        [Op.like]: `%${query.name}%`,
       },
     };
   }
 
-  const { count, rows } = await Article.findAndCountAll(condition);
-  success(res, "获取文章列表成功", {
-    articles: rows,
+  const { count, rows } = await Category.findAndCountAll(condition);
+  success(res, "获取文章分类列表成功", {
+    categories: rows,
     pagination: {
       total: count,
       currentPage,
@@ -36,20 +36,20 @@ router.get("/", async (req, res, next) => {
 });
 
 router.get("/:id", async (req, res, next) => {
-  const article = await getArticle(req);
-  success(res, "获取文章详情成功", {
-    article,
+  const category = await getCategory(req);
+  success(res, "获取文章分类详情成功", {
+    category,
   });
 });
 
 router.post("/", async (req, res) => {
   const body = filterBody(req);
-  const article = await Article.create(body);
+  const category = await Category.create(body);
   success(
     res,
-    "创建文章成功",
+    "创建文章分类成功",
     {
-      article,
+      category,
     },
     201
   );
@@ -57,51 +57,51 @@ router.post("/", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   const body = filterBody(req);
-  const result = await Article.update(body, {
+  const result = await Category.update(body, {
     where: {
       id: req.params.id,
     },
   });
   if (result[0] === 0) {
-    throw new NotFoundError(`ID: ${req.params.id} 的文章未找到。`);
+    throw new NotFoundError(`ID: ${req.params.id} 的文章分类未找到。`);
   }
-  success(res, "更新文章成功");
+  success(res, "更新文章分类成功");
 });
 
 router.delete("/:id", async (req, res) => {
-  const result = await Article.destroy({
+  const result = await Category.destroy({
     where: {
       id: req.params.id,
     },
   });
   if (result === 0) {
-    throw new NotFoundError(`ID: ${req.params.id} 的文章未找到。`);
+    throw new NotFoundError(`ID: ${req.params.id} 的文章分类未找到。`);
   }
-  success(res, "删除文章成功");
+  success(res, "删除文章分类成功");
 });
 /**
- * 公共方法：查询当前文章
+ * 公共方法：查询当前文章分类
  */
-async function getArticle(req) {
+async function getCategory(req) {
   const { id } = req.params;
 
-  const article = await Article.findByPk(id);
-  if (!article) {
-    throw new NotFoundError(`ID: ${id}的文章未找到。`);
+  const category = await Category.findByPk(id);
+  if (!category) {
+    throw new NotFoundError(`ID: ${id}的文章分类未找到。`);
   }
 
-  return article;
+  return category;
 }
 
 /**
  * 公共方法：白名单过滤
  * @param req
- * @returns {{title, content: (string|string|DocumentFragment|*)}}
+ * @returns {{name, rank}}
  */
 function filterBody(req) {
   return {
-    title: req.body.title,
-    content: req.body.content,
+    name: req.body.name,
+    rank: req.body.rank,
   };
 }
 
