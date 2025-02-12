@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const cors = require("cors");
 
 require("dotenv").config();
 require("express-async-errors");
@@ -41,10 +42,15 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 //token 验证中间件
 app.use(adminAuth);
+// CORS 跨域配置
+const corsOptions = {
+  // origin: ["http://localhost:63342", "https://baidu.com"],
+  origin: "*",
+};
+app.use(cors(corsOptions));
 
 // 注册路由
-app.use("/", indexRouter);
-app.use("/users", userAuth, usersRouter);
+// 后台路由
 app.use("/admin/articles", adminArtitlesRouter);
 app.use("/admin/categories", adminCategoriesRouter);
 app.use("/admin/settings", adminSettingsRouter);
@@ -53,6 +59,9 @@ app.use("/admin/courses", adminCoursesRouter);
 app.use("/admin/chapters", adminChaptersRouter);
 app.use("/admin/charts", adminChartsRouter);
 app.use("/admin/auth", adminAuthRouter);
+// 前台路由
+app.use("/", indexRouter);
+app.use("/users", userAuth, usersRouter);
 app.use("/categories", categoriesRouter);
 app.use("/courses", coursesRouter);
 app.use("/chapters", chaptersRouter);

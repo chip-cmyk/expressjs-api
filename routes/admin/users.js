@@ -47,6 +47,15 @@ router.get("/", async (req, res, next) => {
   });
 });
 
+/**
+ * 查询当前登录的用户详情
+ * GET /admin/users/me
+ */
+router.get("/me", async function (req, res) {
+  const user = req.user;
+  success(res, "查询当前用户信息成功。", { user });
+});
+
 router.get("/:id", async (req, res, next) => {
   const user = await getUser(req);
   success(res, "获取用户详情成功", {

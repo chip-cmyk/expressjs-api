@@ -14,9 +14,9 @@ router.get("/", async (req, res, next) => {
   if (!query.courseId) {
     throw new BadRequest("获取章节列表失败，章节ID不能为空。");
   }
-
   const condition = {
     ...getCondition(),
+    where: {},
     order: [
       ["rank", "ASC"],
       ["id", "ASC"],
@@ -25,17 +25,11 @@ router.get("/", async (req, res, next) => {
     offset: offset,
   };
 
-  condition.where = {
-    courseId: {
-      [Op.eq]: query.courseId,
-    },
-  };
+  condition.where.courseId = query.courseId;
 
   if (query.title) {
-    condition.where = {
-      title: {
-        [Op.like]: `%${query.title}%`,
-      },
+    condition.where.title = {
+      [Op.like]: `%${query.title}%`,
     };
   }
 
@@ -57,17 +51,18 @@ router.get("/:id", async (req, res, next) => {
   });
 });
 
-router.post("/", async (req, res) => {
+/**
+ * 创建章节
+ * POST /admin/chapters
+ */
+router.post("/", async function (req, res) {
   const body = filterBody(req);
+
+  // 创建章节，并增加课程章节数
   const chapter = await Chapter.create(body);
-  success(
-    res,
-    "创建章节成功",
-    {
-      chapter,
-    },
-    201
-  );
+  await Course.increment("chaptersCount", { where: { id: chapter.courseId } });
+
+  success(res, "创建章节成功。", { chapter }, 201);
 });
 
 router.put("/:id", async (req, res) => {
@@ -84,15 +79,13 @@ router.put("/:id", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
-  const result = await Chapter.destroy({
-    where: {
-      id: req.params.id,
-    },
-  });
-  if (result === 0) {
-    throw new NotFound(`ID: ${req.params.id} 的章节未找到。`);
-  }
-  success(res, "删除章节成功");
+  const chapter = await getChapter(req);
+
+  // 删除章节，并减少课程章节数
+  await chapter.destroy();
+  await Course.decrement("chaptersCount", { where: { id: chapter.courseId } });
+
+  success(res, "删除章节成功。");
 });
 /**
  * 公共方法：查询当前章节
