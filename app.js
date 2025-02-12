@@ -2,16 +2,18 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+
 require("dotenv").config();
-// 引入 express-async-errors 中间件
 require("express-async-errors");
 
+// 引入中间件
 const globalErrorHandler = require("./middlewares/globalErrorHandler");
 const adminAuth = require("./middlewares/admin-auth");
+const userAuth = require("./middlewares/user-auth");
 
+// 引入路由
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
-
 const adminArtitlesRouter = require("./routes/admin/articles");
 const adminCategoriesRouter = require("./routes/admin/categories");
 const adminSettingsRouter = require("./routes/admin/settings");
@@ -26,21 +28,22 @@ const chaptersRouter = require("./routes/chapters");
 const articlesRouter = require("./routes/articles");
 const settingsRouter = require("./routes/settings");
 const searchRouter = require("./routes/search");
+const authRouter = require("./routes/auth");
 
 const app = express();
 
+// 配置中间件
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-
 //token 验证中间件
 app.use(adminAuth);
 
+// 注册路由
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
-
+app.use("/users", userAuth, usersRouter);
 app.use("/admin/articles", adminArtitlesRouter);
 app.use("/admin/categories", adminCategoriesRouter);
 app.use("/admin/settings", adminSettingsRouter);
@@ -55,6 +58,7 @@ app.use("/chapters", chaptersRouter);
 app.use("/articles", articlesRouter);
 app.use("/settings", settingsRouter);
 app.use("/search", searchRouter);
+app.use("/auth", authRouter);
 
 // 模拟一个会抛出异常的路由
 // app.get("/error", (req, res) => {

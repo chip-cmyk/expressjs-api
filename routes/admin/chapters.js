@@ -12,7 +12,7 @@ router.get("/", async (req, res, next) => {
   const offset = (currentPage - 1) * pageSize;
 
   if (!query.courseId) {
-    throw new BadRequest("获取章节列表失败，课程ID不能为空。");
+    throw new BadRequest("获取章节列表失败，章节ID不能为空。");
   }
 
   const condition = {
