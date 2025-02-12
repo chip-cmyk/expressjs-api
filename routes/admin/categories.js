@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Category } = require("../../models");
+const { Category, Course } = require("../../models");
 const { Op } = require("sequelize");
 const { success } = require("../../utils/response");
 const { NotFound, Conflict } = require("http-errors");
@@ -12,7 +12,11 @@ router.get("/", async (req, res, next) => {
   const offset = (currentPage - 1) * pageSize;
 
   const condition = {
-    order: [["id", "DESC"]],
+    order: [
+      ["rank", "ASC"],
+      ["id", "ASC"],
+    ],
+
     limit: pageSize,
     offset,
   };
@@ -70,6 +74,10 @@ router.put("/:id", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
+  const count = await Course.count({ where: { categoryId: req.params.id } });
+  if (count > 0) {
+    throw new Conflict("当前分类有课程，无法删除。");
+  }
   const result = await Category.destroy({
     where: {
       id: req.params.id,

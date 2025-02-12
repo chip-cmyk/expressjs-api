@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const { Course } = require("../../models");
 const { Op } = require("sequelize");
 const { success } = require("../../utils/response");
-const { NotFound } = require("http-errors");
+const { NotFound, Conflict } = require("http-errors");
+const { Course, Category, User, Chapter } = require("../../models");
 
 router.get("/", async (req, res, next) => {
   const query = req.query;
@@ -13,7 +13,6 @@ router.get("/", async (req, res, next) => {
 
   const condition = {
     ...getCondition(),
-    where: {},
     order: [["id", "DESC"]],
     limit: pageSize,
     offset: offset,
@@ -86,6 +85,10 @@ router.put("/:id", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
+  const count = await Chapter.count({ where: { courseId: req.params.id } });
+  if (count > 0) {
+    throw new Conflict("当前课程有章节，无法删除。");
+  }
   const result = await Course.destroy({
     where: {
       id: req.params.id,
@@ -96,13 +99,15 @@ router.delete("/:id", async (req, res) => {
   }
   success(res, "删除课程成功");
 });
+
 /**
  * 公共方法：查询当前课程
  */
 async function getCourse(req) {
   const { id } = req.params;
+  const condition = getCondition();
 
-  const course = await Course.findByPk(id);
+  const course = await Course.findByPk(id, condition);
   if (!course) {
     throw new NotFound(`ID: ${id}的课程未找到。`);
   }
@@ -128,11 +133,25 @@ function filterBody(req) {
 }
 
 /**
- * 公共方法：获取查询条件
- * @returns {{}}
+ * 公共方法：关联分类、用户数据
+ * @returns {{include: [{as: string, model, attributes: string[]}], attributes: {exclude: string[]}}}
  */
 function getCondition() {
-  return {};
+  return {
+    attributes: { exclude: ["CategoryId", "UserId"] },
+    include: [
+      {
+        model: Category,
+        as: "category",
+        attributes: ["id", "name"],
+      },
+      {
+        model: User,
+        as: "user",
+        attributes: ["id", "username", "avatar"],
+      },
+    ],
+  };
 }
 
 module.exports = router;
