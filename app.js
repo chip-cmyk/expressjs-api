@@ -78,9 +78,11 @@ app.use("/likes", userAuth, likesRouter);
 // 注册全局错误处理中间件
 app.use(globalErrorHandler);
 
-const port = 3006;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+//与.env.PORT 端口号同时设置会导致端口冲突，故注释掉
+// const port = process.env.PORT || 3006;
+
+// app.listen(port, () => {
+//   console.log(`Server is running on port ${port}`);
+// });
 
 module.exports = app;
