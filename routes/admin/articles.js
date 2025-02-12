@@ -12,16 +12,15 @@ router.get("/", async (req, res, next) => {
   const offset = (currentPage - 1) * pageSize;
 
   const condition = {
+    where: {},
     order: [["id", "DESC"]],
     limit: pageSize,
-    offset,
+    offset: offset,
   };
 
   if (query.title) {
-    condition.where = {
-      title: {
-        [Op.like]: `%${query.title}%`,
-      },
+    condition.where.title = {
+      [Op.like]: `%${query.title}%`,
     };
   }
 
