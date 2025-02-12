@@ -11,6 +11,7 @@ const usersRouter = require("./routes/users");
 
 const adminArtitlesRouter = require("./routes/admin/articles");
 const adminCategoriesRouter = require("./routes/admin/categories");
+const adminSettingsRouter = require("./routes/admin/settings");
 
 const app = express();
 
@@ -25,6 +26,8 @@ app.use("/users", usersRouter);
 
 app.use("/admin/articles", adminArtitlesRouter);
 app.use("/admin/categories", adminCategoriesRouter);
+app.use("/admin/settings", adminSettingsRouter);
+
 // 模拟一个会抛出异常的路由
 // app.get("/error", (req, res) => {
 //   throw new Error("Something went wrong!");

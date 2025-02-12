@@ -4,6 +4,7 @@ import pluginJs from "@eslint/js";
 /** @type {import('eslint').Linter.Config[]} */
 export default [
   { files: ["**/*.js"], languageOptions: { sourceType: "commonjs" } },
+  // 配置识别node和浏览器环境的全局变量
   { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
   pluginJs.configs.recommended,
   {
